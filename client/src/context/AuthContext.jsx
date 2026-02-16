@@ -7,15 +7,21 @@ export const AuthProvider = ({ children }) => {
     const [doctor, setDoctor] = useState(null);
     const [token, setToken] = useState(localStorage.getItem('token'));
     const [loading, setLoading] = useState(true);
+    const [isSuspended, setIsSuspended] = useState(false);
 
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         const storedDoctor = localStorage.getItem('doctor');
         if (storedUser && token) {
             try {
-                setUser(JSON.parse(storedUser));
+                const parsedUser = JSON.parse(storedUser);
+                setUser(parsedUser);
                 if (storedDoctor) {
                     setDoctor(JSON.parse(storedDoctor));
+                }
+                // Check suspension status from stored user data
+                if (parsedUser.tenant?.status === 'suspended' && parsedUser.role !== 'super_admin') {
+                    setIsSuspended(true);
                 }
             } catch (e) {
                 console.error('Failed to parse stored user data', e);
@@ -28,6 +34,18 @@ export const AuthProvider = ({ children }) => {
         setLoading(false);
     }, [token]);
 
+    // Listen for suspension events from API interceptor
+    useEffect(() => {
+        const handleSuspension = () => {
+            setIsSuspended(true);
+        };
+
+        window.addEventListener('tenant-suspended', handleSuspension);
+        return () => {
+            window.removeEventListener('tenant-suspended', handleSuspension);
+        };
+    }, []);
+
     const login = (userData, userToken, doctorData = null) => {
         localStorage.setItem('token', userToken);
         localStorage.setItem('user', JSON.stringify(userData));
@@ -37,6 +55,12 @@ export const AuthProvider = ({ children }) => {
         setToken(userToken);
         setUser(userData);
         setDoctor(doctorData);
+
+        if (userData.tenant?.status === 'suspended' && userData.role !== 'super_admin') {
+            setIsSuspended(true);
+        } else {
+            setIsSuspended(false);
+        }
     };
 
     const updateUser = (updatedData) => {
@@ -59,10 +83,11 @@ export const AuthProvider = ({ children }) => {
         setToken(null);
         setUser(null);
         setDoctor(null);
+        setIsSuspended(false);
     };
 
     return (
-        <AuthContext.Provider value={{ user, doctor, token, login, logout, updateUser, isAuthenticated: !!token, loading, role: user?.role }}>
+        <AuthContext.Provider value={{ user, doctor, token, login, logout, updateUser, isAuthenticated: !!token, loading, role: user?.role, isSuspended }}>
             {children}
         </AuthContext.Provider>
     );

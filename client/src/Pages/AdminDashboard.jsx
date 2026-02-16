@@ -35,7 +35,7 @@ const AdminDashboard = ({ onLogout }) => {
                     </h1>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '1.5rem' }}>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                            <Avatar src={user?.profilePic} name={user?.name} size="small" />
+                            <Avatar src={user?.profilePhoto} name={user?.name} size="small" />
                             <span style={{ fontWeight: '500', color: '#333' }}>{user?.name}</span>
                         </div>
                         <Button onClick={onLogout} variant="secondary">

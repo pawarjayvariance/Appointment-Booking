@@ -8,6 +8,7 @@ import DoctorDetail from './DoctorDetail';
 import Button from '../components/Atoms/Button';
 import { LogOut, AlertCircle, User } from 'lucide-react';
 import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import { getProfilePicUrl } from '../utils/imageUtils';
 import UserDetail from './UserDetail';
 
 const DoctorDashboard = () => {
@@ -40,11 +41,16 @@ const DoctorDashboard = () => {
                     <h1>Doctor Dashboard {user?.tenant?.name ? `(${user.tenant.name})` : ''}</h1>
                     <div className="user-profile" onClick={() => handleTabChange('profile')}>
                         <div className="user-avatar-mini">
-                            {user?.profilePic ? (
-                                <img src={user.profilePic} alt="Avatar" className="avatar-img" />
-                            ) : (
-                                <User size={20} />
-                            )}
+                            <img
+                                src={getProfilePicUrl(user?.profilePhoto)}
+                                alt="Avatar"
+                                className="avatar-img"
+                                onError={(e) => {
+                                    e.target.style.display = 'none';
+                                    e.target.nextSibling.style.display = 'block';
+                                }}
+                            />
+                            <User size={20} style={{ display: 'none' }} />
                         </div>
                         <span>{doctor?.name || user?.name || 'Doctor'}</span>
                         <Button variant="ghost" onClick={(e) => { e.stopPropagation(); logout(); }} className="logout-btn">

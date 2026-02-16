@@ -421,6 +421,82 @@ const getUserAppointmentHistory = async (req, res) => {
     }
 };
 
+// get detailed doctor info for patients
+const getDoctorDetails = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+
+        const doctor = await prisma.doctor.findFirst({
+            where: {
+                id: doctorId,
+                tenantId: req.tenantId
+            },
+            include: {
+                user: {
+                    select: { profilePic: true }
+                },
+                _count: {
+                    select: {
+                        appointments: true,
+                        reviews: true
+                    }
+                },
+                reviews: {
+                    take: 5,
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        user: {
+                            select: { name: true, profilePic: true }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!doctor) {
+            return res.status(404).json({ error: 'Doctor not found' });
+        }
+
+        // Calculate average rating
+        const avgRatingAggregation = await prisma.review.aggregate({
+            where: {
+                doctorId: doctor.id,
+                tenantId: req.tenantId
+            },
+            _avg: { rating: true }
+        });
+
+        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(doctor.name)}&background=random`;
+        const profilePhoto = doctor.user?.profilePic || defaultAvatar;
+
+        res.json({
+            id: doctor.id,
+            name: doctor.name,
+            specialization: doctor.specialization,
+            profilePic: doctor.user?.profilePic,
+            profilePhoto: profilePhoto,
+            timezone: doctor.timezone,
+            slotDuration: doctor.slotDuration,
+            workingStartTime: doctor.workingStart,
+            workingEndTime: doctor.workingEnd,
+            totalAppointments: doctor._count.appointments,
+            totalReviews: doctor._count.reviews,
+            averageRating: avgRatingAggregation._avg.rating ? parseFloat(avgRatingAggregation._avg.rating.toFixed(1)) : 0,
+            recentReviews: doctor.reviews.map(review => ({
+                id: review.id,
+                patientName: review.user.name,
+                patientProfilePhoto: review.user.profilePic,
+                rating: review.rating,
+                feedback: review.feedback,
+                createdAt: review.createdAt
+            }))
+        });
+    } catch (error) {
+        console.error('Error in getDoctorDetails (patient):', error);
+        res.status(500).json({ error: 'Failed to fetch doctor details' });
+    }
+};
+
 module.exports = {
     getDoctors,
     getSlotsByDoctor,
@@ -431,5 +507,6 @@ module.exports = {
     getMyAppointments,
     getUserAppointmentHistory,
     cancelAppointment,
-    rescheduleAppointment
+    rescheduleAppointment,
+    getDoctorDetails
 };

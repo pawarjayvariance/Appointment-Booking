@@ -20,7 +20,13 @@ const profileController = {
                 return res.status(404).json({ error: 'User not found' });
             }
 
-            res.json(user);
+            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name)}&background=random`;
+            const profilePhoto = user.profilePic || defaultAvatar;
+
+            res.json({
+                ...user,
+                profilePhoto: profilePhoto
+            });
         } catch (error) {
             console.error('Get profile error:', error);
             res.status(500).json({ error: 'Internal server error: ' + error.message });
@@ -69,9 +75,15 @@ const profileController = {
                 }
             });
 
+            const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(updatedUser.name)}&background=random`;
+            const profilePhoto = updatedUser.profilePic || defaultAvatar;
+
             res.json({
                 message: 'Profile updated successfully',
-                user: updatedUser
+                user: {
+                    ...updatedUser,
+                    profilePhoto: profilePhoto
+                }
             });
         } catch (error) {
             console.error('Update profile error:', error);

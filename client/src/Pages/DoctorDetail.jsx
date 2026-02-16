@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { useParams, useNavigate, useLocation } from 'react-router-dom';
 import Button from '../components/Atoms/Button';
 import {
@@ -12,8 +12,12 @@ import {
     Stethoscope,
     Globe,
     Timer,
-    MessageSquare
+    MessageSquare,
+    Edit3
 } from 'lucide-react';
+import { getProfilePicUrl } from '../utils/imageUtils';
+import Avatar from '../components/Atoms/Avatar';
+import ProfileSection from '../components/Organisms/ProfileSection';
 
 const DoctorDetail = () => {
     const { tenantId, doctorId } = useParams();
@@ -22,38 +26,44 @@ const DoctorDetail = () => {
     const [doctor, setDoctor] = useState(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [isEditing, setIsEditing] = useState(false);
     const token = localStorage.getItem('token');
 
     // Detect role context from URL
     const isAdmin = location.pathname.startsWith('/admin');
     const isSuperAdmin = location.pathname.startsWith('/super-admin');
     const isDoctorView = location.pathname.startsWith('/doctor');
+    const isUserRole = location.pathname.startsWith('/doctor/') && !isDoctorView; // Special case for player view
+
+    // Actually, let's make it simpler based on role or path
+    const isPatientView = !isAdmin && !isSuperAdmin && !isDoctorView && location.pathname.includes('/doctor/');
 
     // Sub-contexts for doctor role
     const isDoctorSelf = location.pathname === '/doctor/profile';
     const isDoctorColleague = location.pathname.startsWith('/doctor/doctors/');
 
-    const rolePrefix = isAdmin ? 'admin' : isDoctorView ? 'doctor' : 'super-admin';
+    const rolePrefix = isAdmin ? 'admin' : isDoctorView ? 'doctor' : isSuperAdmin ? 'super-admin' : 'user';
 
     // Determine API URL
     let apiBase = '';
     if (isDoctorSelf) {
-        apiBase = `http://localhost:5000/api/doctor/profile`;
+        apiBase = `/doctor/profile`;
     } else if (isDoctorColleague) {
-        apiBase = `http://localhost:5000/api/doctor/doctors/${doctorId}`;
+        apiBase = `/doctor/doctors/${doctorId}`;
     } else if (isAdmin) {
-        apiBase = `http://localhost:5000/api/admin/doctors/${doctorId}`;
+        apiBase = `/admin/doctors/${doctorId}`;
+    } else if (isSuperAdmin) {
+        apiBase = `/super-admin/tenants/${tenantId}/doctors/${doctorId}`;
     } else {
-        apiBase = `http://localhost:5000/api/super-admin/tenants/${tenantId}/doctors/${doctorId}`;
+        // Patient view
+        apiBase = `/doctors/${doctorId}`;
     }
 
     useEffect(() => {
         const fetchDoctorDetails = async () => {
             setLoading(true);
             try {
-                const res = await axios.get(apiBase, {
-                    headers: { Authorization: `Bearer ${token}` }
-                });
+                const res = await api.get(apiBase);
                 setDoctor(res.data);
             } catch (err) {
                 console.error('Failed to fetch doctor details:', err);
@@ -66,54 +76,69 @@ const DoctorDetail = () => {
         if (doctorId || isDoctorSelf) fetchDoctorDetails();
     }, [tenantId, doctorId, token, apiBase, isDoctorSelf]);
 
-    const getProfilePicUrl = (path) => {
-        if (!path) return null;
-        if (path.startsWith('http')) return path;
-        return `http://localhost:5000${path.startsWith('/') ? '' : '/'}${path}`;
-    };
-
     if (loading) return <div style={loadingOverlayStyle}>Gathering Doctor Insights...</div>;
     if (error) return <div style={errorStyle}>{error}</div>;
     if (!doctor) return <div>Doctor information not found.</div>;
 
     const handleBack = () => {
+        if (isEditing) {
+            setIsEditing(false);
+            return;
+        }
         if (isAdmin) {
             navigate('/admin/doctor');
         } else if (isSuperAdmin) {
             navigate(`/super-admin/tenants/${tenantId}`);
+        } else if (isPatientView) {
+            navigate('/booking');
         } else {
             navigate(-1);
         }
     };
 
+    if (isEditing) {
+        return <ProfileSection onCancel={() => setIsEditing(false)} />;
+    }
+
     return (
         <div style={{ animation: 'fadeIn 0.5s ease-out', margin: "0px 30px" }}>
             {/* Header / Back Navigation */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem' }}>
-                {!isDoctorSelf && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '2.5rem', justifyContent: 'space-between' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                     <Button variant="secondary" onClick={handleBack} style={backButtonStyle}>
                         <ArrowLeft size={18} />
                     </Button>
+                    {!isAdmin && !isSuperAdmin && !isDoctorSelf && (
+                        <div>
+                            <h2 style={{ margin: 0, fontWeight: '700' }}>{isPatientView ? 'Doctor Insights' : 'Doctor Profile'}</h2>
+                        </div>
+                    )}
+                </div>
+
+                {isDoctorSelf && (
+                    <Button variant="primary" onClick={() => setIsEditing(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Edit3 size={18} /> Edit Profile
+                    </Button>
                 )}
-                {/* <div>
-                    <h2 style={{ margin: 0, fontWeight: '700' }}>Doctor Profile</h2>
-                    <span style={{ fontSize: '14px', color: '#666' }}>Comprehensive identity and performance audit</span>
-                </div> */}
+
+                {isPatientView && (
+                    <Button variant="primary" onClick={() => navigate('/booking')} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <Calendar size={18} /> Book Appointment
+                    </Button>
+                )}
             </div>
 
             <div style={{ display: 'grid', gridTemplateColumns: '1.2fr 3fr', gap: '2.5rem' }}>
                 {/* Left Column: Identity */}
                 <div style={identitySectionStyle}>
                     <div style={largeAvatarContainer}>
-                        {doctor.profilePic ? (
-                            <img
-                                src={getProfilePicUrl(doctor.profilePic)}
-                                alt={doctor.name}
-                                style={largeAvatarImage}
-                            />
-                        ) : (
-                            <Users size={64} color="#94a3b8" />
-                        )}
+                        <Avatar
+                            src={doctor.profilePic}
+                            name={doctor.name}
+                            size="large"
+                            type="doctor"
+                            style={{ borderRadius: '24px', border: 'none' }}
+                        />
                     </div>
                     <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
                         <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '22px', fontWeight: '700' }}>{doctor.name}</h3>
@@ -151,17 +176,11 @@ const DoctorDetail = () => {
                                     {doctor.recentReviews.map(review => (
                                         <div key={review.id} style={reviewCardStyle}>
                                             <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '0.75rem' }}>
-                                                <div style={smallAvatarStyle}>
-                                                    {review.patientProfilePhoto ? (
-                                                        <img
-                                                            src={getProfilePicUrl(review.patientProfilePhoto)}
-                                                            alt={review.patientName}
-                                                            style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                                                        />
-                                                    ) : (
-                                                        <Users size={14} color="#94a3b8" />
-                                                    )}
-                                                </div>
+                                                <Avatar
+                                                    src={review.patientProfilePhoto}
+                                                    name={review.patientName}
+                                                    size="small"
+                                                />
                                                 <div style={{ flex: 1 }}>
                                                     <div style={{ fontWeight: '600', fontSize: '14px' }}>{review.patientName}</div>
                                                     <div style={{ fontSize: '11px', color: '#999' }}>{new Date(review.createdAt).toLocaleDateString()}</div>

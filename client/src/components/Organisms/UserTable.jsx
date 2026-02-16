@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../Atoms/Button';
@@ -47,9 +47,8 @@ const UserTable = () => {
                 if (debouncedEmail) params.append('email', debouncedEmail);
                 if (roleFilter) params.append('role', roleFilter);
 
-                const res = await axios.get(
-                    `http://localhost:5000/api/admin/users?${params}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                const res = await api.get(
+                    `/admin/users?${params}`
                 );
 
                 setUsers(res.data.users);

@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { useAuth } from '../../context/AuthContext';
 import Button from '../Atoms/Button';
 import { User, Camera, Mail, Save, AlertCircle, CheckCircle } from 'lucide-react';
 import './ProfileSection.css';
 
-const ProfileSection = () => {
+const ProfileSection = ({ onCancel }) => {
     const { user, token, updateUser } = useAuth();
     const [name, setName] = useState(user?.name || '');
-    const [profilePic, setProfilePic] = useState(user?.profilePic || '');
+    const [profilePic, setProfilePic] = useState(user?.profilePhoto || '');
     const [selectedFile, setSelectedFile] = useState(null);
     const [previewUrl, setPreviewUrl] = useState(null);
     const [saving, setSaving] = useState(false);
@@ -36,14 +36,9 @@ const ProfileSection = () => {
                 formData.append('profilePic', profilePic);
             }
 
-            const response = await axios.patch(
-                'http://localhost:5000/api/profile',
-                formData,
-                {
-                    headers: {
-                        Authorization: `Bearer ${token}`
-                    }
-                }
+            const response = await api.patch(
+                '/profile',
+                formData
             );
 
             updateUser(response.data.user);
@@ -51,7 +46,7 @@ const ProfileSection = () => {
             if (selectedFile) {
                 setSelectedFile(null);
                 setPreviewUrl(null);
-                setProfilePic(response.data.user.profilePic);
+                setProfilePic(response.data.user.profilePhoto);
             }
             setMessage({ type: 'success', text: 'Profile updated successfully!' });
         } catch (err) {
@@ -137,10 +132,15 @@ const ProfileSection = () => {
                         {selectedFile && <p className="text-secondary" style={{ fontSize: '0.8rem', marginTop: '0.25rem' }}>Local file selected. Clear it to use URL.</p>}
                     </div>
 
-                    <div className="form-actions">
+                    <div className="form-actions" style={{ display: 'flex', gap: '1rem' }}>
                         <Button type="submit" disabled={saving}>
                             {saving ? 'Saving...' : <><Save size={18} style={{ marginRight: '8px' }} /> Update Profile</>}
                         </Button>
+                        {onCancel && (
+                            <Button type="button" variant="secondary" onClick={onCancel} disabled={saving}>
+                                Cancel
+                            </Button>
+                        )}
                     </div>
                 </form>
             </div>

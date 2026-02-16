@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { ChevronLeft, ChevronRight, AlertCircle, Clock, Star } from 'lucide-react';
 import Button from '../Atoms/Button';
 import Avatar from '../Atoms/Avatar';
@@ -27,9 +27,8 @@ const UserAppointmentsTable = () => {
             setLoading(true);
             setError('');
             try {
-                const res = await axios.get(
-                    `http://localhost:5000/api/user/appointments/history?page=${currentPage}&limit=10`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                const res = await api.get(
+                    `/user/appointments/history?page=${currentPage}&limit=10`
                 );
 
                 setAppointments(res.data.data);

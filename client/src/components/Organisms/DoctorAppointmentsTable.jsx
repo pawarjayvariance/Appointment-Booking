@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from '../../utils/api';
 import { ChevronLeft, ChevronRight, Search, Calendar, Mail, User } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../Atoms/Button';
@@ -48,9 +48,8 @@ const DoctorAppointmentsTable = () => {
                 if (debouncedEmail) params.append('userEmail', debouncedEmail);
                 if (debouncedDate) params.append('date', debouncedDate);
 
-                const res = await axios.get(
-                    `http://localhost:5000/api/doctor/appointments?${params}`,
-                    { headers: { Authorization: `Bearer ${token}` } }
+                const res = await api.get(
+                    `/doctor/appointments?${params}`
                 );
 
                 setAppointments(res.data.data);

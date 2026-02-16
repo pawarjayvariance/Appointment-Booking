@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
-import axios from 'axios';
+import api from '../utils/api';
 import { io } from 'socket.io-client';
 import { format } from 'date-fns';
 import { toZonedTime, format as formatTZ } from 'date-fns-tz';
@@ -18,7 +18,6 @@ import "react-datepicker/dist/react-datepicker.css";
 import "../styles/App.css";
 import { useAuth } from '../context/AuthContext';
 
-const API_BASE = 'http://localhost:5000/api';
 const socket = io('http://localhost:5000');
 
 const BookingPage = () => {
@@ -43,16 +42,6 @@ const BookingPage = () => {
     });
     const [success, setSuccess] = useState(null);
     const { user, token, logout } = useAuth();
-
-    // Create an authenticated axios instance
-    const api = useMemo(() => {
-        return axios.create({
-            baseURL: API_BASE,
-            headers: {
-                Authorization: `Bearer ${token}`
-            }
-        });
-    }, [token]);
 
     const selectedDoctor = useMemo(() => {
         return doctors.length > 0 && currentDoctorIndex !== -1 ? doctors[currentDoctorIndex] : null;

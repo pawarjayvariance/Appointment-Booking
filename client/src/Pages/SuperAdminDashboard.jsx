@@ -143,7 +143,7 @@ const SuperAdminDashboard = ({ onLogout }) => {
                             <span style={{ fontSize: '13px', color: '#10b981', fontWeight: '600' }}>Platform Operational</span>
                         </div>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderLeft: '1px solid #eee', paddingLeft: '1.5rem' }}>
-                            <Avatar src={user?.profilePic} name={user?.name} size="small" />
+                            <Avatar src={user?.profilePhoto} name={user?.name} size="small" />
                             <span style={{ fontWeight: '600', color: '#333', fontSize: '14px' }}>{user?.name}</span>
                         </div>
                         <Button onClick={onLogout} variant="secondary" style={logoutButtonStyle}>

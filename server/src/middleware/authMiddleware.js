@@ -28,7 +28,7 @@ const authMiddleware = async (req, res, next) => {
 
         // Check if tenant is suspended
         if (user.tenant && user.tenant.status === 'suspended' && user.role !== 'super_admin') {
-            return res.status(403).json({ error: 'Access denied: Your account is suspended.' });
+            return res.status(403).json({ error: 'Your tenant is suspended. Please contact Super Admin.' });
         }
 
         // Attach user and tenant info to the request object

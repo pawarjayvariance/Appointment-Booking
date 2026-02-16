@@ -17,6 +17,7 @@ import {
     ChevronRight,
     Shield
 } from 'lucide-react';
+import Avatar from '../components/Atoms/Avatar';
 
 const UserDetail = () => {
     const { userId } = useParams();
@@ -53,12 +54,6 @@ const UserDetail = () => {
         if (userId) fetchUserDetails();
     }, [userId, page, token, apiBase]);
 
-    const getProfilePicUrl = (path) => {
-        if (!path) return null;
-        if (path.startsWith('http')) return path;
-        return `http://localhost:5000${path.startsWith('/') ? '' : '/'}${path}`;
-    };
-
     const formatDateTime = (slot) => {
         if (!slot) return 'N/A';
         const date = new Date(slot.date).toLocaleDateString();
@@ -86,15 +81,13 @@ const UserDetail = () => {
                 {/* Left Column: Identity */}
                 <div style={identitySectionStyle}>
                     <div style={largeAvatarContainer}>
-                        {userData.profilePic ? (
-                            <img
-                                src={getProfilePicUrl(userData.profilePic)}
-                                alt={userData.name}
-                                style={largeAvatarImage}
-                            />
-                        ) : (
-                            <User size={64} color="#94a3b8" />
-                        )}
+                        <Avatar
+                            src={userData.profilePic}
+                            name={userData.name}
+                            size="large"
+                            type="user"
+                            style={{ border: 'none' }}
+                        />
                     </div>
                     <div style={{ textAlign: 'center', marginTop: '1.5rem' }}>
                         <h3 style={{ margin: '0 0 0.5rem 0', fontSize: '22px', fontWeight: '700' }}>{userData.name}</h3>

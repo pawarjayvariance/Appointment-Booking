@@ -24,6 +24,7 @@ router.get('/doctors', bookingController.getDoctors);
 router.get('/slots', bookingController.getAllSlots);
 router.get('/doctors/:doctorId/slots', bookingController.getSlotsByDoctor);
 router.get('/appointments/by-slot/:timeSlotId', bookingController.getAppointmentBySlot);
+router.get('/doctors/:doctorId', authMiddleware, authorize('user'), bookingController.getDoctorDetails);
 
 // User Routes
 router.get('/user/appointments/history', authMiddleware, authorize('user'), bookingController.getUserAppointmentHistory);

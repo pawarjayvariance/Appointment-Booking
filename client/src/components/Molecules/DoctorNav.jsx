@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ChevronLeft, ChevronRight, User, Globe } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import DoctorProfilePopover from "../Organisms/DoctorProfilePopover";
 import { useAuth } from "../../context/AuthContext";
 import "./DoctorNav.css";
@@ -13,7 +14,10 @@ const DoctorNav = ({
   hasDoctors,
 }) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const { token } = useAuth();
+  const { token, user } = useAuth();
+  const navigate = useNavigate();
+
+  const isPatient = user?.role === 'user';
 
   if (!hasDoctors) return null;
 
@@ -62,9 +66,29 @@ const DoctorNav = ({
           )}
 
           {!isAllDoctors && (
-            <button onClick={onSwitchToAll} className="switch-btn">
-              View All Doctors Schedule
-            </button>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', alignItems: 'center', marginTop: '12px' }}>
+              {isPatient && (
+                <button
+                  onClick={() => navigate(`/doctor/${selectedDoctor.id}`)}
+                  className="view-profile-btn"
+                  style={{
+                    padding: '6px 16px',
+                    borderRadius: '20px',
+                    border: '1px solid var(--primary)',
+                    background: 'white',
+                    color: 'var(--primary)',
+                    fontSize: '13px',
+                    fontWeight: '600',
+                    cursor: 'pointer'
+                  }}
+                >
+                  View Full Profile
+                </button>
+              )}
+              <button onClick={onSwitchToAll} className="switch-btn">
+                View All Doctors Schedule
+              </button>
+            </div>
           )}
         </div>
 

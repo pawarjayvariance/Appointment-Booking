@@ -85,10 +85,14 @@ const login = async (req, res) => {
             include: {
                 doctor: true,
                 tenant: {
-                    select: { name: true }
+                    select: { name: true, status: true }
                 }
             }
         });
+
+        // Use stored profilePic or a default avatar
+        const defaultAvatar = `https://ui-avatars.com/api/?name=${encodeURIComponent(userWithDetails.name)}&background=random`;
+        const profilePhoto = userWithDetails.profilePic || defaultAvatar;
 
         res.status(200).json({
             message: 'Login successful',
@@ -98,7 +102,9 @@ const login = async (req, res) => {
                 name: userWithDetails.name,
                 email: userWithDetails.email,
                 role: userWithDetails.role,
-                tenant: userWithDetails.tenant
+                tenantId: userWithDetails.tenantId,
+                tenant: userWithDetails.tenant,
+                profilePhoto: profilePhoto
             },
             doctor: userWithDetails.doctor
         });
