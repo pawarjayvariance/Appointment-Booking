@@ -1,6 +1,7 @@
 import React from 'react';
 import Button from '../Atoms/Button';
 import Input from '../Atoms/Input';
+import Avatar from '../Atoms/Avatar';
 
 const BookingModal = ({
     isOpen,
@@ -13,7 +14,8 @@ const BookingModal = ({
     loading,
     isEditing,
     isRescheduling,
-    user
+    user,
+    doctor
 }) => {
     if (!isOpen) return null;
 
@@ -22,6 +24,15 @@ const BookingModal = ({
             <div className="modal-content">
                 <h2>{title}</h2>
                 <div className="appt-summary">
+                    {doctor && (
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem', paddingBottom: '1rem', borderBottom: '1px solid #f1f5f9' }}>
+                            <Avatar src={doctor.user?.profilePic} name={doctor.name} size="medium" type="doctor" />
+                            <div>
+                                <div style={{ fontWeight: '600', fontSize: '1.1rem' }}>Dr. {doctor.name}</div>
+                                <div style={{ fontSize: '0.9rem', color: '#64748b' }}>{doctor.specialization}</div>
+                            </div>
+                        </div>
+                    )}
                     {summary}
                 </div>
                 <form onSubmit={(e) => onSubmit(e, 'submit')}>

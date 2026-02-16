@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Button from '../Atoms/Button';
+import Avatar from '../Atoms/Avatar';
 import useDebounce from '../../hooks/useDebounce';
 
 const AppointmentTable = () => {
@@ -187,9 +189,24 @@ const AppointmentTable = () => {
                                             <td style={tableCellStyle}>
                                                 {(currentPage - 1) * 10 + index + 1}
                                             </td>
-                                            <td style={tableCellStyle}>{appointment.user.name}</td>
+                                            <td style={tableCellStyle}>
+                                                <Link
+                                                    to={`/admin/users/${appointment.user.id}`}
+                                                    style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', color: 'inherit' }}
+                                                >
+                                                    <Avatar src={appointment.user?.profilePic} name={appointment.user.name} size="small" />
+                                                    <span style={{ fontWeight: '500', color: '#007bff', cursor: 'pointer' }}>{appointment.user.name}</span>
+                                                </Link>
+                                            </td>
                                             <td style={tableCellStyle}>{appointment.user.email}</td>
-                                            <td style={tableCellStyle}>{appointment.doctor.name}</td>
+                                            <td style={tableCellStyle}>
+                                                <Link
+                                                    to={`/admin/doctors/${appointment.doctor.id}`}
+                                                    style={{ textDecoration: 'none', color: '#007bff', fontWeight: '500' }}
+                                                >
+                                                    {appointment.doctor.name}
+                                                </Link>
+                                            </td>
                                             <td style={tableCellStyle}>
                                                 {formatDateTime(appointment.timeSlot)}
                                             </td>

@@ -89,4 +89,5 @@ const DoctorNav = ({
   );
 };
 
+
 export default DoctorNav;

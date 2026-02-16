@@ -4,6 +4,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import ReviewStars from '../Atoms/ReviewStars';
 import Button from '../Atoms/Button';
+import Avatar from '../Atoms/Avatar';
 import './DoctorProfilePopover.css';
 
 const DoctorProfilePopover = ({ doctor, isOpen, onClose, token }) => {
@@ -64,11 +65,7 @@ const DoctorProfilePopover = ({ doctor, isOpen, onClose, token }) => {
 
                 <div className="popover-header">
                     <div className="popover-avatar">
-                        {doctor.user?.profilePic ? (
-                            <img src={doctor.user.profilePic} alt={doctor.name} />
-                        ) : (
-                            <User size={48} color="#94a3b8" />
-                        )}
+                        <Avatar src={doctor.user?.profilePic} name={doctor.name} size="large" type="doctor" />
                     </div>
                     <h3 className="popover-title">{doctor.name}</h3>
                     <span className="popover-subtitle">{doctor.specialization}</span>
@@ -92,11 +89,7 @@ const DoctorProfilePopover = ({ doctor, isOpen, onClose, token }) => {
                                 <div key={rev.id} className="popover-review-item">
                                     <div className="review-header">
                                         <div className="reviewer-avatar">
-                                            {rev.user.profilePic ? (
-                                                <img src={rev.user.profilePic} alt={rev.user.name} />
-                                            ) : (
-                                                <User size={16} color="#cbd5e1" />
-                                            )}
+                                            <Avatar src={rev.user.profilePic} name={rev.user.name} size="small" />
                                         </div>
                                         <span className="reviewer-name">{rev.user.name}</span>
                                         <span className="review-date">{new Date(rev.createdAt).toLocaleDateString()}</span>

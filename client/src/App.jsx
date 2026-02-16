@@ -8,9 +8,10 @@ import DoctorDashboard from './Pages/DoctorDashboard';
 import SuperAdminDashboard from './Pages/SuperAdminDashboard';
 import UserDashboard from './Pages/UserDashboard';
 
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+
 const AppContent = () => {
     const { isAuthenticated, loading, user, logout } = useAuth();
-    const [isRegistering, setIsRegistering] = React.useState(false);
     const [regSuccess, setRegSuccess] = React.useState('');
 
     if (loading) return <div className="loading-screen">Loading...</div>;
@@ -19,52 +20,65 @@ const AppContent = () => {
         return (
             <div className="app-container">
                 <div className="auth-container">
-                    {isRegistering ? (
-                        <RegisterForm
-                            onToggleMode={() => {
-                                setIsRegistering(false);
-                                setRegSuccess('');
-                            }}
-                            onSuccess={() => {
-                                setIsRegistering(false);
-                                setRegSuccess('Registration successful! Please sign in.');
-                            }}
-                        />
-                    ) : (
-                        <LoginForm
-                            onToggleMode={() => {
-                                setIsRegistering(true);
-                                setRegSuccess('');
-                            }}
-                            successMessage={regSuccess}
-                        />
-                    )}
+                    <Routes>
+                        <Route path="/login" element={
+                            <LoginForm
+                                onToggleMode={() => setRegSuccess('')}
+                                successMessage={regSuccess}
+                            />
+                        } />
+                        <Route path="/register" element={
+                            <RegisterForm
+                                onToggleMode={() => setRegSuccess('')}
+                                onSuccess={() => setRegSuccess('Registration successful! Please sign in.')}
+                            />
+                        } />
+                        <Route path="*" element={<Navigate to="/login" replace />} />
+                    </Routes>
                 </div>
             </div>
         );
     }
 
     // Role-based rendering
-    if (user?.role === 'super_admin') {
-        return <SuperAdminDashboard onLogout={logout} />;
-    }
-
-    if (user?.role === 'admin') {
-        return <AdminDashboard onLogout={logout} />;
-    }
-
-    if (user?.role === 'doctor') {
-        return <DoctorDashboard onLogout={logout} />;
-    }
-
-    // for user (default)
-    return <UserDashboard />;
+    return (
+        <Routes>
+            {user?.role === 'super_admin' && (
+                <>
+                    <Route path="/super-admin/*" element={<SuperAdminDashboard onLogout={logout} />} />
+                    <Route path="*" element={<Navigate to="/super-admin/dashboard" replace />} />
+                </>
+            )}
+            {user?.role === 'admin' && (
+                <>
+                    <Route path="/admin/*" element={<AdminDashboard onLogout={logout} />} />
+                    <Route path="*" element={<Navigate to="/admin" replace />} />
+                </>
+            )}
+            {user?.role === 'doctor' && (
+                <>
+                    <Route path="/doctor/*" element={<DoctorDashboard onLogout={logout} />} />
+                    <Route path="*" element={<Navigate to="/doctor" replace />} />
+                </>
+            )}
+            {user?.role === 'user' && (
+                <>
+                    <Route path="/dashboard" element={<UserDashboard />} />
+                    <Route path="/booking" element={<BookingPage />} />
+                    <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                </>
+            )}
+            <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+    );
 };
 
 function App() {
     return (
         <AuthProvider>
-            <AppContent />
+            <Router>
+                <AppContent />
+            </Router>
         </AuthProvider>
     );
 }

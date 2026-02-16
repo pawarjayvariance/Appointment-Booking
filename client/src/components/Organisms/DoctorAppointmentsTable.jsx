@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight, Search, Calendar, Mail, User } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Button from '../Atoms/Button';
+import Avatar from '../Atoms/Avatar';
 import useDebounce from '../../hooks/useDebounce';
 import './DoctorAppointmentsTable.css';
 
@@ -154,7 +156,17 @@ const DoctorAppointmentsTable = () => {
                                 return (
                                     <tr key={apt.id}>
                                         <td>{(currentPage - 1) * 10 + index + 1}</td>
-                                        <td><strong>{apt.user.name}</strong></td>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                <Avatar src={apt.user.profilePic} name={apt.user.name} size="small" />
+                                                <Link
+                                                    to={`/doctor/users/${apt.user.id}`}
+                                                    style={{ textDecoration: 'none', color: '#007bff', fontWeight: '700', cursor: 'pointer' }}
+                                                >
+                                                    {apt.user.name}
+                                                </Link>
+                                            </div>
+                                        </td>
                                         <td>{apt.user.email}</td>
                                         <td>{dateStr}</td>
                                         <td>{timeStr}</td>

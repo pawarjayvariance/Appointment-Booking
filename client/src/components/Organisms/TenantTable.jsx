@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import Button from '../Atoms/Button';
 import { Search, Plus, Power, ShieldAlert, CheckCircle } from 'lucide-react';
@@ -118,7 +119,13 @@ const TenantTable = () => {
                         ) : tenants.map(tenant => (
                             <tr key={tenant.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
                                 <td style={tableCellStyle}>
-                                    <div style={{ fontWeight: '600', color: '#333' }}>{tenant.name}</div>
+                                    <Link
+                                        to={`/super-admin/tenants/${tenant.id}`}
+                                        style={tenantNameLinkStyle}
+                                        className="tenant-link"
+                                    >
+                                        {tenant.name}
+                                    </Link>
                                     <div style={{ fontSize: '11px', color: '#999' }}>ID: {tenant.id}</div>
                                 </td>
                                 <td style={tableCellStyle}>
@@ -225,6 +232,10 @@ const TenantTable = () => {
                     </div>
                 </div>
             )}
+            <style dangerouslySetInnerHTML={{
+                __html: `
+                .tenant-link:hover { color: #2563eb !important; text-decoration: underline !important; }
+            `}} />
         </div>
     );
 };
@@ -243,5 +254,7 @@ const modalContentStyle = { backgroundColor: 'white', padding: '2rem', borderRad
 const formGroupStyle = { marginBottom: '1rem' };
 const labelStyle = { display: 'block', fontSize: '13px', fontWeight: '600', marginBottom: '6px', color: '#555' };
 const inputStyle = { width: '100%', padding: '10px', borderRadius: '6px', border: '1px solid #ddd', outline: 'none', transition: 'border-color 0.2s' };
+
+const tenantNameLinkStyle = { fontWeight: '600', color: '#3b82f6', textDecoration: 'none', transition: 'color 0.2s' };
 
 export default TenantTable;

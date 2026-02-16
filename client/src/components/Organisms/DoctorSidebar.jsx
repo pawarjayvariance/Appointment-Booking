@@ -7,7 +7,7 @@ const DoctorSidebar = ({ activeTab, onTabChange }) => {
         { id: 'schedule', label: 'My Schedule', icon: LayoutDashboard },
         // { id: 'patients', label: 'Patients', icon: Users },
         { id: 'reviews', label: 'Reviews', icon: Star },
-        { id: 'profile', label: 'My Profile', icon: User }
+        { id: 'profile', label: 'Professional Profile', icon: User }
     ];
 
     return (

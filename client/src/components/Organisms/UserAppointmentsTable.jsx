@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight, AlertCircle, Clock, Star } from 'lucide-react';
 import Button from '../Atoms/Button';
+import Avatar from '../Atoms/Avatar';
 import ReviewModal from './ReviewModal';
 import './UserAppointmentsTable.css';
 
@@ -104,7 +105,12 @@ const UserAppointmentsTable = () => {
                                 return (
                                     <tr key={apt.id}>
                                         <td>{(currentPage - 1) * 10 + index + 1}</td>
-                                        <td><strong>{apt.doctor.name}</strong></td>
+                                        <td>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                                <Avatar src={apt.doctor.user?.profilePic} name={apt.doctor.name} size="small" type="doctor" />
+                                                <strong>{apt.doctor.name}</strong>
+                                            </div>
+                                        </td>
                                         <td>{dateStr}</td>
                                         <td>{timeStr}</td>
                                         <td>

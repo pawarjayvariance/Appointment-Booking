@@ -77,7 +77,7 @@ const PlatformAnalytics = () => {
                                 <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
                                     <span style={{ ...rankStyle, backgroundColor: '#ecfdf5', color: '#059669' }}>{index + 1}</span>
                                     <div>
-                                        <div style={{ fontWeight: '600', color: '#333' }}>Dr. {doctor.name}</div>
+                                        <div style={{ fontWeight: '600', color: '#333' }}>{doctor.name}</div>
                                         <div style={{ fontSize: '11px', color: '#999' }}>{doctor.specialization}</div>
                                     </div>
                                 </div>

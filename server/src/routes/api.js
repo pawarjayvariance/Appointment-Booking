@@ -36,7 +36,10 @@ router.patch('/appointments/:appointmentId/reschedule', authMiddleware, authoriz
 // Doctor Routes
 router.get('/doctor/appointments', authMiddleware, authorize('doctor'), doctorController.getAppointments);
 router.get('/doctor/schedule', authMiddleware, authorize('doctor'), doctorController.getSchedule);
-router.patch('/doctor/schedule/update-hours', authMiddleware, authorize('doctor'), doctorController.updateWorkingHours);
+router.get('/doctor/profile', authMiddleware, authorize('doctor'), doctorController.getDoctorProfile);
+router.get('/doctor/users/:userId', authMiddleware, authorize('doctor'), doctorController.getUserDetails);
+router.get('/doctor/doctors/:doctorId', authMiddleware, authorize('doctor'), doctorController.getDoctorDetails);
+router.put('/doctor/working-hours', authMiddleware, authorize('doctor'), doctorController.updateWorkingHours);
 router.post('/doctor/schedule/disable-slots', authMiddleware, authorize('doctor'), doctorController.disableSlots);
 router.post('/doctor/schedule/enable-slots', authMiddleware, authorize('doctor'), doctorController.enableSlots);
 
@@ -59,19 +62,24 @@ const superAdminController = require('../controllers/superAdminController');
 
 // Admin Routes
 router.get('/admin/appointments', authMiddleware, authorize('admin', 'super_admin'), adminController.getAppointments);
-router.get('/admin/doctors', authMiddleware, authorize('admin', 'super_admin'), adminController.getDoctors);
 router.get('/admin/users', authMiddleware, authorize('admin', 'super_admin'), adminController.getUsers);
+router.get('/admin/users/:userId', authMiddleware, authorize('admin'), adminController.getUserDetails);
+router.get('/admin/doctors', authMiddleware, authorize('admin', 'super_admin'), adminController.getDoctors);
+router.get('/admin/doctors/:doctorId', authMiddleware, authorize('admin'), adminController.getDoctorDetails);
 router.get('/admin/doctor-performance', authMiddleware, authorize('admin', 'super_admin'), adminController.getDoctorPerformance);
 
 // Super Admin Routes
 router.get('/super-admin/dashboard', authMiddleware, authorize('super_admin'), superAdminController.getDashboardStats);
 router.get('/super-admin/tenants', authMiddleware, authorize('super_admin'), superAdminController.getTenants);
+router.get('/super-admin/tenants/:id', authMiddleware, authorize('super_admin'), superAdminController.getTenantDetails);
+router.get('/super-admin/tenants/:tenantId/doctors/:doctorId', authMiddleware, authorize('super_admin'), superAdminController.getDoctorDetails);
 router.post('/super-admin/tenants', authMiddleware, authorize('super_admin'), superAdminController.createTenant);
 router.patch('/super-admin/tenants/:id', authMiddleware, authorize('super_admin'), superAdminController.updateTenant);
 router.patch('/super-admin/tenants/:id/status', authMiddleware, authorize('super_admin'), superAdminController.updateTenantStatus);
 router.get('/super-admin/users', authMiddleware, authorize('super_admin'), superAdminController.getGlobalUsers);
 router.get('/super-admin/appointments', authMiddleware, authorize('super_admin'), superAdminController.getGlobalAppointments);
 router.get('/super-admin/analytics', authMiddleware, authorize('super_admin'), superAdminController.getPlatformAnalytics);
+router.get('/super-admin/users/:userId', authMiddleware, authorize('super_admin'), superAdminController.getUserDetails);
 router.get('/super-admin/stats', authMiddleware, authorize('super_admin'), superAdminController.getDashboardStats); // Keep for compatibility
 
 // Review Routes

@@ -62,7 +62,10 @@ const getSlotsByDoctor = async (req, res) => {
                 ...(req.user ? (req.user.role !== 'super_admin' && { tenantId: req.tenantId }) : (req.query.tenantId && { tenantId: req.query.tenantId }))
             },
             include: {
-                appointment: true
+                appointment: true,
+                doctor: {
+                    include: { user: { select: { profilePic: true } } }
+                }
             },
             orderBy: {
                 startTime: 'asc'
@@ -85,7 +88,9 @@ const getAllSlots = async (req, res) => {
                 ...(req.user ? (req.user.role !== 'super_admin' && { tenantId: req.tenantId }) : (req.query.tenantId && { tenantId: req.query.tenantId }))
             },
             include: {
-                doctor: true,
+                doctor: {
+                    include: { user: { select: { profilePic: true } } }
+                },
                 appointment: true
             },
             orderBy: {
@@ -385,7 +390,11 @@ const getUserAppointmentHistory = async (req, res) => {
             where,
             include: {
                 doctor: {
-                    select: { name: true, specialization: true }
+                    select: {
+                        name: true,
+                        specialization: true,
+                        user: { select: { profilePic: true } }
+                    }
                 },
                 timeSlot: {
                     select: { startTime: true, endTime: true, date: true }

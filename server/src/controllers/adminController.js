@@ -67,10 +67,15 @@ const getAppointments = async (req, res) => {
             where,
             include: {
                 user: {
-                    select: { id: true, name: true, email: true }
+                    select: { id: true, name: true, email: true, profilePic: true }
                 },
                 doctor: {
-                    select: { id: true, name: true, specialization: true }
+                    select: {
+                        id: true,
+                        name: true,
+                        specialization: true,
+                        user: { select: { profilePic: true } }
+                    }
                 },
                 timeSlot: {
                     select: { startTime: true, endTime: true, date: true }
@@ -175,7 +180,8 @@ const getDoctors = async (req, res) => {
                 timezone: true,
                 slotDuration: true,
                 workingStart: true,
-                workingEnd: true
+                workingEnd: true,
+                user: { select: { profilePic: true } }
             },
             orderBy: {
                 name: 'asc'
@@ -252,7 +258,11 @@ const getUsers = async (req, res) => {
                 name: true,
                 email: true,
                 role: true,
-                createdAt: true
+                profilePic: true,
+                createdAt: true,
+                doctor: {
+                    select: { id: true }
+                }
             },
             orderBy: {
                 createdAt: 'desc'
@@ -348,9 +358,182 @@ const getDoctorPerformance = async (req, res) => {
     }
 };
 
+/**
+ * Get user specific details for admin
+ */
+const getUserDetails = async (req, res) => {
+    try {
+        const { userId } = req.params;
+        const { page = 1, limit = 10 } = req.query;
+        const skip = (parseInt(page) - 1) * parseInt(limit);
+
+        const [user, reviewsCount, appointments, totalCount] = await Promise.all([
+            prisma.user.findFirst({
+                where: {
+                    id: userId,
+                    tenantId: req.tenantId
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    role: true,
+                    profilePic: true,
+                    createdAt: true,
+                    tenant: {
+                        select: { name: true, id: true }
+                    },
+                    doctor: {
+                        select: { id: true }
+                    }
+                }
+            }),
+            prisma.review.count({
+                where: {
+                    userId,
+                    tenantId: req.tenantId
+                }
+            }),
+            prisma.appointment.findMany({
+                where: {
+                    userId,
+                    tenantId: req.tenantId
+                },
+                include: {
+                    doctor: {
+                        select: { id: true, name: true }
+                    },
+                    timeSlot: {
+                        select: { startTime: true, date: true }
+                    },
+                    tenant: {
+                        select: { id: true, name: true }
+                    }
+                },
+                orderBy: { createdAt: 'desc' },
+                skip,
+                take: parseInt(limit)
+            }),
+            prisma.appointment.count({
+                where: {
+                    userId,
+                    tenantId: req.tenantId
+                }
+            })
+        ]);
+
+        if (!user) {
+            return res.status(404).json({ error: 'User not found in your tenant' });
+        }
+
+        // Format stats
+        const stats = {
+            total: totalCount,
+            reviews: reviewsCount,
+            joinedDate: user.createdAt
+        };
+
+        res.json({
+            ...user,
+            stats,
+            appointments,
+            pagination: {
+                totalCount,
+                totalPages: Math.ceil(totalCount / parseInt(limit)),
+                currentPage: parseInt(page),
+                limit: parseInt(limit)
+            }
+        });
+    } catch (error) {
+        console.error('Error in admin getUserDetails:', error);
+        res.status(500).json({ error: 'Failed to fetch user details' });
+    }
+};
+
+/**
+ * Get doctor details for admin
+ */
+const getDoctorDetails = async (req, res) => {
+    try {
+        const { doctorId } = req.params;
+
+        const doctor = await prisma.doctor.findFirst({
+            where: {
+                id: doctorId,
+                tenantId: req.tenantId
+            },
+            include: {
+                user: {
+                    select: {
+                        profilePic: true
+                    }
+                },
+                _count: {
+                    select: {
+                        appointments: true,
+                        reviews: true
+                    }
+                },
+                reviews: {
+                    take: 5,
+                    orderBy: { createdAt: 'desc' },
+                    include: {
+                        user: {
+                            select: {
+                                name: true,
+                                profilePic: true
+                            }
+                        }
+                    }
+                }
+            }
+        });
+
+        if (!doctor) {
+            return res.status(404).json({ error: 'Doctor not found in your tenant' });
+        }
+
+        // Calculate average rating
+        const avgRatingAggregation = await prisma.review.aggregate({
+            where: {
+                doctorId,
+                tenantId: req.tenantId
+            },
+            _avg: { rating: true }
+        });
+
+        res.json({
+            id: doctor.id,
+            name: doctor.name,
+            specialization: doctor.specialization,
+            profilePic: doctor.user?.profilePic,
+            timezone: doctor.timezone,
+            slotDuration: doctor.slotDuration,
+            workingStartTime: doctor.workingStart,
+            workingEndTime: doctor.workingEnd,
+            totalAppointments: doctor._count.appointments,
+            totalReviews: doctor._count.reviews,
+            averageRating: avgRatingAggregation._avg.rating ? parseFloat(avgRatingAggregation._avg.rating.toFixed(1)) : 0,
+            recentReviews: doctor.reviews.map(review => ({
+                id: review.id,
+                patientName: review.user.name,
+                patientProfilePhoto: review.user.profilePic,
+                rating: review.rating,
+                feedback: review.feedback,
+                createdAt: review.createdAt
+            }))
+        });
+    } catch (error) {
+        console.error('Error in admin getDoctorDetails:', error);
+        res.status(500).json({ error: 'Failed to fetch doctor details' });
+    }
+};
+
 module.exports = {
     getAppointments,
     getDoctors,
     getUsers,
-    getDoctorPerformance
+    getDoctorPerformance,
+    getUserDetails,
+    getDoctorDetails
 };

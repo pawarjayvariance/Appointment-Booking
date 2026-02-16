@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import axios from 'axios';
 import { Star, TrendingUp, Users, Calendar, ArrowUpDown } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import '../../styles/DoctorPerformance.css';
 
 const DoctorPerformance = () => {
@@ -150,7 +151,14 @@ const DoctorPerformance = () => {
                             filteredAndSortedData.map((doctor, index) => (
                                 <tr key={doctor.doctorId}>
                                     <td>{index + 1}</td>
-                                    <td style={{ fontWeight: '500' }}>{doctor.name}</td>
+                                    <td style={{ fontWeight: '500' }}>
+                                        <Link
+                                            to={`/admin/doctors/${doctor.doctorId}`}
+                                            style={{ textDecoration: 'none', color: '#007bff', cursor: 'pointer' }}
+                                        >
+                                            {doctor.name}
+                                        </Link>
+                                    </td>
                                     <td>{doctor.specialization}</td>
                                     <td>
                                         <div className="rating-stars">

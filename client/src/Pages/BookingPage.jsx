@@ -365,6 +365,7 @@ const BookingPage = () => {
                 setFormData={setFormData}
                 onSubmit={handleAction}
                 user={user}
+                doctor={editingAppointment?.doctor || bookingSlot?.doctor || selectedDoctor}
                 summary={
                     <>
                         <p><strong>Date:</strong> {format(selectedDate, 'EEEE, MMMM d')}</p>

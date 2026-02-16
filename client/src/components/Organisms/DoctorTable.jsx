@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 import Button from '../Atoms/Button';
+import Avatar from '../Atoms/Avatar';
 import useDebounce from '../../hooks/useDebounce';
 
 const DoctorTable = () => {
@@ -201,7 +203,15 @@ const DoctorTable = () => {
                                             <td style={tableCellStyle}>
                                                 {(currentPage - 1) * 10 + index + 1}
                                             </td>
-                                            <td style={tableCellStyle}>{doctor.name}</td>
+                                            <td style={tableCellStyle}>
+                                                <Link
+                                                    to={`/admin/doctors/${doctor.id}`}
+                                                    style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', textDecoration: 'none', color: 'inherit' }}
+                                                >
+                                                    <Avatar src={doctor.user?.profilePic} name={doctor.name} size="small" type="doctor" />
+                                                    <span style={{ fontWeight: '500', color: '#007bff', cursor: 'pointer' }}>{doctor.name}</span>
+                                                </Link>
+                                            </td>
                                             <td style={tableCellStyle}>{doctor.specialization}</td>
                                             <td style={tableCellStyle}>{doctor.timezone}</td>
                                             <td style={tableCellStyle}>{doctor.slotDuration} min</td>

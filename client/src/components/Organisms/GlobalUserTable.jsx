@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Users, Filter } from 'lucide-react';
+import Avatar from '../Atoms/Avatar';
 
 const GlobalUserTable = () => {
     const [users, setUsers] = useState([]);
@@ -100,8 +102,18 @@ const GlobalUserTable = () => {
                         ) : users.map(user => (
                             <tr key={user.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
                                 <td style={tableCellStyle}>
-                                    <div style={{ fontWeight: '600', color: '#333' }}>{user.name}</div>
-                                    <div style={{ fontSize: '12px', color: '#777' }}>{user.email}</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                        <Avatar src={user.profilePic} name={user.name} size="small" />
+                                        <div>
+                                            <Link
+                                                to={user.role === 'doctor' && user.doctor ? `/super-admin/tenants/${user.tenant?.id}/doctors/${user.doctor.id}` : `/super-admin/users/${user.id}`}
+                                                style={{ textDecoration: 'none' }}
+                                            >
+                                                <div style={{ fontWeight: '600', color: '#3b82f6', cursor: 'pointer' }}>{user.name}</div>
+                                            </Link>
+                                            <div style={{ fontSize: '12px', color: '#777' }}>{user.email}</div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td style={tableCellStyle}>
                                     <span style={{ ...roleBadgeStyle, backgroundColor: getRoleColor(user.role).bg, color: getRoleColor(user.role).text }}>
@@ -109,7 +121,9 @@ const GlobalUserTable = () => {
                                     </span>
                                 </td>
                                 <td style={tableCellStyle}>
-                                    <div style={{ fontWeight: '500', color: '#555' }}>{user.tenant?.name || 'Platform'}</div>
+                                    <Link to={`/super-admin/tenants/${user.tenant?.id}`} style={{ textDecoration: 'none' }}>
+                                        <div style={{ fontWeight: '500', color: '#3b82f6', cursor: 'pointer' }}>{user.tenant?.name || 'Platform'}</div>
+                                    </Link>
                                 </td>
                                 <td style={tableCellStyle}>
                                     {new Date(user.createdAt).toLocaleDateString()}

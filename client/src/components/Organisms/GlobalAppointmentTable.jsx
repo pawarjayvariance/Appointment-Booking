@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
 import { Calendar, Filter } from 'lucide-react';
+import Avatar from '../Atoms/Avatar';
 
 const GlobalAppointmentTable = () => {
     const [appointments, setAppointments] = useState([]);
@@ -90,14 +92,25 @@ const GlobalAppointmentTable = () => {
                         ) : appointments.map(appt => (
                             <tr key={appt.id} style={{ borderBottom: '1px solid #f9f9f9' }}>
                                 <td style={tableCellStyle}>
-                                    <div style={{ fontWeight: '600', color: '#333' }}>{appt.user?.name}</div>
-                                    <div style={{ fontSize: '12px', color: '#777' }}>{appt.user?.email}</div>
+                                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                                        <Avatar src={appt.user?.profilePic} name={appt.user?.name} size="small" />
+                                        <div>
+                                            <Link to={`/super-admin/users/${appt.user?.id}`} style={{ textDecoration: 'none' }}>
+                                                <div style={{ fontWeight: '600', color: '#3b82f6', cursor: 'pointer' }}>{appt.user?.name}</div>
+                                            </Link>
+                                            <div style={{ fontSize: '12px', color: '#777' }}>{appt.user?.email}</div>
+                                        </div>
+                                    </div>
                                 </td>
                                 <td style={tableCellStyle}>
-                                    <div style={{ fontWeight: '500', color: '#555' }}>Dr. {appt.doctor?.name}</div>
+                                    <Link to={`/super-admin/tenants/${appt.tenant?.id}/doctors/${appt.doctor?.id}`} style={{ textDecoration: 'none' }}>
+                                        <div style={{ fontWeight: '500', color: '#3b82f6', cursor: 'pointer' }}>{appt.doctor?.name}</div>
+                                    </Link>
                                 </td>
                                 <td style={tableCellStyle}>
-                                    <div style={{ fontWeight: '600', color: 'var(--primary)' }}>{appt.tenant?.name}</div>
+                                    <Link to={`/super-admin/tenants/${appt.tenant?.id}`} style={{ textDecoration: 'none' }}>
+                                        <div style={{ fontWeight: '600', color: '#3b82f6', cursor: 'pointer' }}>{appt.tenant?.name}</div>
+                                    </Link>
                                 </td>
                                 <td style={tableCellStyle}>
                                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>

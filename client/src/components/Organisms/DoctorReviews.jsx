@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Star, ChevronLeft, ChevronRight, MessageSquare, User } from 'lucide-react';
 import Button from '../Atoms/Button';
+import Avatar from '../Atoms/Avatar';
 import './DoctorReviews.css';
 
 const DoctorReviews = () => {
@@ -84,13 +85,7 @@ const DoctorReviews = () => {
                                 <tr key={review.id}>
                                     <td>
                                         <div className="patient-cell">
-                                            <div className="mini-avatar">
-                                                {review.user?.profilePic ? (
-                                                    <img src={review.user.profilePic} alt="" />
-                                                ) : (
-                                                    <User size={14} />
-                                                )}
-                                            </div>
+                                            <Avatar src={review.user?.profilePic} name={review.user?.name} size="small" />
                                             <span>{review.user?.name}</span>
                                         </div>
                                     </td>

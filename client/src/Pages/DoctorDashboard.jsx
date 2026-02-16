@@ -4,13 +4,23 @@ import DoctorSidebar from '../components/Organisms/DoctorSidebar';
 import DoctorAppointmentsTable from '../components/Organisms/DoctorAppointmentsTable';
 import DoctorSchedule from '../components/Organisms/DoctorSchedule';
 import DoctorReviews from '../components/Organisms/DoctorReviews';
-import ProfileSection from '../components/Organisms/ProfileSection';
+import DoctorDetail from './DoctorDetail';
 import Button from '../components/Atoms/Button';
 import { LogOut, AlertCircle, User } from 'lucide-react';
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import UserDetail from './UserDetail';
 
 const DoctorDashboard = () => {
     const { user, doctor, logout, role } = useAuth();
-    const [activeTab, setActiveTab] = useState('appointments');
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Derive activeTab from URL
+    const activeTab = location.pathname.split('/').pop() || 'appointments';
+
+    const handleTabChange = (tabId) => {
+        navigate(`/doctor/${tabId}`);
+    };
 
     if (role && role !== 'doctor' && role !== 'admin') {
         return (
@@ -23,29 +33,12 @@ const DoctorDashboard = () => {
         );
     }
 
-    const renderContent = () => {
-        switch (activeTab) {
-            case 'appointments':
-                return <DoctorAppointmentsTable />;
-            case 'schedule':
-                return <DoctorSchedule />;
-            // case 'patients':
-            //     return <div className="tab-content"><h2>Patients Content</h2><p>View and manage patient records here.</p></div>;
-            case 'reviews':
-                return <DoctorReviews />;
-            case 'profile':
-                return <ProfileSection />;
-            default:
-                return <div>Select a tab</div>;
-        }
-    };
-
     return (
         <div className="dashboard-container">
             <header className="dashboard-header">
                 <div className="header-inner">
                     <h1>Doctor Dashboard {user?.tenant?.name ? `(${user.tenant.name})` : ''}</h1>
-                    <div className="user-profile" onClick={() => setActiveTab('profile')}>
+                    <div className="user-profile" onClick={() => handleTabChange('profile')}>
                         <div className="user-avatar-mini">
                             {user?.profilePic ? (
                                 <img src={user.profilePic} alt="Avatar" className="avatar-img" />
@@ -53,7 +46,7 @@ const DoctorDashboard = () => {
                                 <User size={20} />
                             )}
                         </div>
-                        <span>Dr. {doctor?.name || user?.name || 'Doctor'}</span>
+                        <span>{doctor?.name || user?.name || 'Doctor'}</span>
                         <Button variant="ghost" onClick={(e) => { e.stopPropagation(); logout(); }} className="logout-btn">
                             <LogOut size={18} /> Sign Out
                         </Button>
@@ -62,9 +55,18 @@ const DoctorDashboard = () => {
             </header>
 
             <div className="dashboard-main">
-                <DoctorSidebar activeTab={activeTab} onTabChange={setActiveTab} />
+                <DoctorSidebar activeTab={activeTab} onTabChange={handleTabChange} />
                 <main className="dashboard-content">
-                    {renderContent()}
+                    <Routes>
+                        <Route index element={<Navigate to="appointments" replace />} />
+                        <Route path="appointments" element={<DoctorAppointmentsTable />} />
+                        <Route path="schedule" element={<DoctorSchedule />} />
+                        <Route path="reviews" element={<DoctorReviews />} />
+                        <Route path="profile" element={<DoctorDetail />} />
+                        <Route path="doctors/:doctorId" element={<DoctorDetail />} />
+                        <Route path="users/:userId" element={<UserDetail />} />
+                        <Route path="*" element={<Navigate to="appointments" replace />} />
+                    </Routes>
                 </main>
             </div>
         </div>

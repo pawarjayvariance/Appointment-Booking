@@ -8,8 +8,21 @@ import GlobalAppointmentTable from '../components/Organisms/GlobalAppointmentTab
 import PlatformAnalytics from '../components/Organisms/PlatformAnalytics';
 import { LogOut, Layout, Building2, Users, Calendar, Activity, Star } from 'lucide-react';
 
+import { Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import TenantDetail from './TenantDetail';
+import DoctorDetail from './DoctorDetail';
+import UserDetail from './UserDetail';
+import Avatar from '../components/Atoms/Avatar';
+import { useAuth } from '../context/AuthContext';
+
 const SuperAdminDashboard = ({ onLogout }) => {
-    const [activeTab, setActiveTab] = useState('dashboard');
+    const { user } = useAuth();
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Derive activeTab from URL
+    const activeTab = location.pathname.split('/').pop() || 'dashboard';
+
     const [stats, setStats] = useState(null);
     const [loading, setLoading] = useState(true);
     const token = localStorage.getItem('token');
@@ -29,7 +42,7 @@ const SuperAdminDashboard = ({ onLogout }) => {
             }
         };
         fetchStats();
-    }, [token]);
+    }, [token, activeTab]); // Re-fetch on tab change to keep dashboard up to date
 
     const renderDashboardOverview = () => {
         if (loading) return <div style={loadingOverlayStyle}>Loading Platform Performance...</div>;
@@ -40,10 +53,36 @@ const SuperAdminDashboard = ({ onLogout }) => {
                 <h2 style={{ marginBottom: '2rem', fontWeight: '700' }}>Platform Overview</h2>
 
                 <div style={kpiGridStyle}>
-                    <KPICard title="Total Tenants" value={stats.totalTenants} icon={Building2} color="#3b82f6" subtitle={`${stats.activeTenants} Active / ${stats.suspendedTenants} Terminated`} />
-                    <KPICard title="Platform Users" value={stats.totalUsers} icon={Users} color="#8b5cf6" />
-                    <KPICard title="Appointments" value={stats.totalAppointments} icon={Calendar} color="#10b981" />
-                    <KPICard title="Avg. Rating" value={stats.platformAverageRating} icon={Star} color="#f59e0b" suffix="/ 5.0" />
+                    <KPICard
+                        title="Total Tenants"
+                        value={stats.totalTenants}
+                        icon={Building2}
+                        color="#3b82f6"
+                        subtitle={`${stats.activeTenants} Active / ${stats.suspendedTenants} Terminated`}
+                        onClick={() => { navigate('/super-admin/tenants'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    />
+                    <KPICard
+                        title="Platform Users"
+                        value={stats.totalUsers}
+                        icon={Users}
+                        color="#8b5cf6"
+                        onClick={() => { navigate('/super-admin/user'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    />
+                    <KPICard
+                        title="Appointments"
+                        value={stats.totalAppointments}
+                        icon={Calendar}
+                        color="#10b981"
+                        onClick={() => { navigate('/super-admin/appointment'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    />
+                    <KPICard
+                        title="Avg. Rating"
+                        value={stats.platformAverageRating}
+                        icon={Star}
+                        color="#f59e0b"
+                        suffix="/ 5.0"
+                        onClick={() => { navigate('/super-admin/analytics'); window.scrollTo({ top: 0, behavior: 'smooth' }); }}
+                    />
                 </div>
 
                 <div style={{ marginTop: '3rem', display: 'grid', gridTemplateColumns: '2fr 1fr', gap: '2rem' }}>
@@ -60,8 +99,8 @@ const SuperAdminDashboard = ({ onLogout }) => {
                     <div style={quickActionsStyle}>
                         <h4 style={{ margin: '0 0 1rem 0' }}>Quick Actions</h4>
                         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
-                            <Button variant="secondary" onClick={() => setActiveTab('tenants')} style={actionButtonStyle}>Manage All Tenants</Button>
-                            <Button variant="secondary" onClick={() => setActiveTab('user')} style={actionButtonStyle}>Review Global Users</Button>
+                            <Button variant="secondary" onClick={() => navigate('/super-admin/tenants')} style={actionButtonStyle}>Manage All Tenants</Button>
+                            <Button variant="secondary" onClick={() => navigate('/super-admin/user')} style={actionButtonStyle}>Review Global Users</Button>
                             <Button variant="outline" style={actionButtonStyle}>Platform Configuration</Button>
                         </div>
                     </div>
@@ -71,20 +110,19 @@ const SuperAdminDashboard = ({ onLogout }) => {
     };
 
     const renderContent = () => {
-        switch (activeTab) {
-            case 'dashboard':
-                return renderDashboardOverview();
-            case 'tenants':
-                return <TenantTable />;
-            case 'user':
-                return <GlobalUserTable />;
-            case 'appointment':
-                return <GlobalAppointmentTable />;
-            case 'analytics':
-                return <PlatformAnalytics />;
-            default:
-                return renderDashboardOverview();
-        }
+        return (
+            <Routes>
+                <Route path="dashboard" element={renderDashboardOverview()} />
+                <Route path="tenants" element={<TenantTable />} />
+                <Route path="tenants/:id" element={<TenantDetail />} />
+                <Route path="tenants/:tenantId/doctors/:doctorId" element={<DoctorDetail />} />
+                <Route path="user" element={<GlobalUserTable />} />
+                <Route path="users/:userId" element={<UserDetail />} />
+                <Route path="appointment" element={<GlobalAppointmentTable />} />
+                <Route path="analytics" element={<PlatformAnalytics />} />
+                <Route path="/" element={<Navigate to="dashboard" replace />} />
+            </Routes>
+        );
     };
 
     return (
@@ -104,6 +142,10 @@ const SuperAdminDashboard = ({ onLogout }) => {
                             <div style={statusDot}></div>
                             <span style={{ fontSize: '13px', color: '#10b981', fontWeight: '600' }}>Platform Operational</span>
                         </div>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', borderLeft: '1px solid #eee', paddingLeft: '1.5rem' }}>
+                            <Avatar src={user?.profilePic} name={user?.name} size="small" />
+                            <span style={{ fontWeight: '600', color: '#333', fontSize: '14px' }}>{user?.name}</span>
+                        </div>
                         <Button onClick={onLogout} variant="secondary" style={logoutButtonStyle}>
                             <LogOut size={16} /> Sign Out
                         </Button>
@@ -114,7 +156,7 @@ const SuperAdminDashboard = ({ onLogout }) => {
             {/* Main Layout */}
             <div style={mainLayoutStyle}>
                 {/* Sidebar */}
-                <Sidebar activeTab={activeTab} onTabChange={setActiveTab} isSuperAdmin={true} />
+                <Sidebar activeTab={activeTab} onTabChange={(tab) => navigate(`/super-admin/${tab}`)} isSuperAdmin={true} />
 
                 {/* Content Area */}
                 <div style={contentAreaStyle}>
@@ -127,13 +169,23 @@ const SuperAdminDashboard = ({ onLogout }) => {
             <style dangerouslySetInnerHTML={{
                 __html: `
                 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+                .kpi-card { transition: all 0.3s ease; }
+                .kpi-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05) !important; border-color: #3b82f6 !important; }
             `}} />
         </div>
     );
 };
 
-const KPICard = ({ title, value, icon: Icon, color, subtitle, suffix }) => (
-    <div style={kpiCardStyle}>
+const KPICard = ({ title, value, icon: Icon, color, subtitle, suffix, onClick }) => (
+    <div
+        style={{
+            ...kpiCardStyle,
+            cursor: onClick ? 'pointer' : 'default',
+        }}
+        onClick={onClick}
+        className="kpi-card"
+        title={onClick ? `Click to view ${title}` : ''}
+    >
         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1rem' }}>
             <span style={{ color: '#666', fontSize: '14px', fontWeight: '500' }}>{title}</span>
             <div style={{ padding: '8px', borderRadius: '8px', backgroundColor: `${color}15`, display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
