@@ -1,0 +1,203 @@
+/* DoctorSchedule.css */
+
+.doctor-schedule-container {
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 1rem;
+}
+
+.schedule-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+.schedule-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+    color: #111;
+}
+
+.settings-panel {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    background-color: #f8fafc;
+    padding: 1.5rem;
+    border-radius: 8px;
+    margin-bottom: 2rem;
+    border: 1px solid #e2e8f0;
+}
+
+.setting-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.setting-item label {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #475569;
+}
+
+.setting-input {
+    padding: 8px 12px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.setting-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.slots-section {
+    margin-top: 1rem;
+}
+
+.slots-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.slots-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+    gap: 1rem;
+}
+
+.slot-card {
+    position: relative;
+    padding: 1rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background-color: #fff;
+    cursor: pointer;
+    transition: all 0.2s;
+    user-select: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.slot-card:hover:not(.booked) {
+    border-color: #3b82f6;
+    background-color: #eff6ff;
+}
+
+.slot-card.selected {
+    border-color: #3b82f6;
+    background-color: #ebf5ff;
+}
+
+.slot-card.booked {
+    background-color: #f1f5f9;
+    border-color: #e2e8f0;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.slot-card.disabled-slot {
+    background-color: #fee2e2;
+    border-color: #fecaca;
+    color: #991b1b;
+}
+
+.slot-card.booked::after {
+    content: "Booked";
+    font-size: 10px;
+    color: #64748b;
+    font-weight: bold;
+}
+
+.slot-card.disabled-slot::after {
+    content: "Doctor not available";
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.slot-time {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.slot-checkbox {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+}
+
+.actions-footer {
+    position: sticky;
+    bottom: 0;
+    background-color: #fff;
+    padding: 1.5rem 0;
+    margin-top: 2rem;
+    border-top: 1px solid #eee;
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+}
+
+.loading-overlay {
+    text-align: center;
+    padding: 3rem;
+    color: #64748b;
+}
+
+.date-selector {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-size: 0.8rem;
+    color: #64748b;
+    margin-top: 0.5rem;
+}
+
+.status-item {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.free {
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+}
+
+.dot.booked {
+    background-color: #cbd5e1;
+}
+
+.dot.disabled {
+    background-color: #fecaca;
+    border: 1px solid #f87171;
+}
+
+.dot.selected {
+    background-color: #dbeafe;
+    border: 1px solid #3b82f6;
+}

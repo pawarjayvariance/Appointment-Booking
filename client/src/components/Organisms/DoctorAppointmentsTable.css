@@ -1,0 +1,154 @@
+/* DoctorAppointmentsTable.css */
+
+.doctor-appointments-container {
+    padding: 1.5rem;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    margin-top: 0rem;
+}
+
+.table-header-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.table-header-section h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: #1a1a1a;
+}
+
+.records-stat {
+    font-size: 0.875rem;
+    color: #666;
+}
+
+.appointments-table-wrapper {
+    overflow-x: auto;
+    border: 1px solid #eee;
+    border-radius: 8px;
+}
+
+.appointments-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+    font-size: 0.875rem;
+}
+
+.appointments-table th {
+    background-color: #f9fafb;
+    padding: 12px 16px;
+    font-weight: 600;
+    color: #374151;
+    border-bottom: 2px solid #edf2f7;
+}
+
+.appointments-table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f3f4f6;
+    color: #4b5563;
+    vertical-align: middle;
+}
+
+/* Filter Row Styles */
+.filter-row th {
+    padding: 8px 16px;
+    background-color: #fff;
+    border-bottom: 1px solid #edf2f7;
+}
+
+.filter-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.filter-input-group svg {
+    position: absolute;
+    left: 8px;
+    color: #9ca3af;
+}
+
+.filter-input {
+    width: 100%;
+    padding: 6px 8px 6px 30px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    font-size: 0.8rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.filter-input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.filter-input.date-filter {
+    padding-left: 30px;
+}
+
+/* Status Badge */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 2px 8px;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    background-color: #def7ec;
+    color: #03543f;
+}
+
+/* Pagination Styles */
+.pagination-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.page-info {
+    font-size: 0.875rem;
+    color: #4b5563;
+}
+
+/* Loading & Empty States */
+.table-loading,
+.table-empty,
+.table-error {
+    text-align: center;
+    padding: 3rem;
+    color: #6b7280;
+}
+
+.table-error {
+    color: #dc2626;
+    background-color: #fef2f2;
+    border-radius: 6px;
+}
+
+.loading-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(0, 0, 0, 0.1);
+    border-left-color: #3b82f6;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}

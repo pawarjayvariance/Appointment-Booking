@@ -1,0 +1,148 @@
+/* DoctorReviews.css */
+
+.doctor-reviews-container {
+    padding: 1.5rem;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+.reviews-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.reviews-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    color: var(--text-main);
+}
+
+.stats-badge {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: #f1f5f9;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.85rem;
+    color: #475569;
+    font-weight: 600;
+}
+
+.reviews-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1rem;
+}
+
+.reviews-table th {
+    text-align: left;
+    padding: 1rem;
+    background: #f8fafc;
+    color: #64748b;
+    font-weight: 600;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.reviews-table td {
+    padding: 1.25rem 1rem;
+    border-bottom: 1px solid #f1f5f9;
+    vertical-align: middle;
+}
+
+.patient-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.mini-avatar {
+    width: 28px;
+    height: 28px;
+    background: #f1f5f9;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    color: #94a3b8;
+}
+
+.mini-avatar img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.stars-cell {
+    display: flex;
+    gap: 2px;
+}
+
+.feedback-cell p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #475569;
+    line-height: 1.5;
+    max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.no-text {
+    font-style: italic;
+    color: #94a3b8;
+}
+
+.date-cell {
+    font-size: 0.85rem;
+    color: #94a3b8;
+}
+
+.loading-state,
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: #94a3b8;
+}
+
+.spinner {
+    display: inline-block;
+    width: 24px;
+    height: 24px;
+    border: 3px solid #f1f5f9;
+    border-top-color: var(--primary);
+    border-radius: 50%;
+    animation: rotate 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes rotate {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1.5rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #f1f5f9;
+}
+
+.page-count {
+    font-size: 0.9rem;
+    color: #64748b;
+    font-weight: 500;
+}

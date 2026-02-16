@@ -1,0 +1,873 @@
+:root {
+    --primary: #4f46e5;
+    --primary-hover: #4338ca;
+    --bg-gray: #f8fafc;
+    --bg-secondary: #f1f5f9;
+    --border-color: #e2e8f0;
+    --text-main: #1e293b;
+    --text-secondary: #64748b;
+    --success-bg: #ecfdf5;
+    --success-text: #065f46;
+    --error-bg: #fef2f2;
+    --error-text: #b91c1c;
+    --card-bg: #ffffff;
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 1rem;
+    font-family: 'Inter', -apple-system, sans-serif;
+    color: var(--text-main);
+}
+
+.calendar-header {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+@media (min-width: 768px) {
+    .calendar-header {
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: flex-start;
+    }
+}
+
+h1 {
+    font-size: 1.75rem;
+    margin: 0 0 0.5rem 0;
+    background: linear-gradient(to right, var(--primary), #818cf8);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.text-secondary {
+    color: var(--text-secondary);
+    margin: 0;
+}
+
+.doctor-section {
+    background: var(--bg-gray);
+    padding: 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid var(--border-color);
+    width: 100%;
+}
+
+@media (min-width: 768px) {
+    .doctor-section {
+        width: auto;
+        text-align: right;
+        padding: 0;
+        background: none;
+        border: none;
+    }
+}
+
+.doctor-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+@media (min-width: 768px) {
+    .doctor-nav {
+        justify-content: center;
+    }
+}
+
+.doctor-detail {
+    display: block;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+}
+
+.doctor-tz {
+    display: block;
+    font-size: 0.8rem;
+    color: #94a3b8;
+    margin-top: 0.25rem;
+}
+
+.switch-btn {
+    font-size: 0.75rem;
+    color: var(--primary);
+    border: none;
+    background: none;
+    cursor: pointer;
+    padding: 0;
+    margin-top: 0.5rem;
+    font-weight: 600;
+    text-decoration: underline;
+}
+
+.main-content {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width: 1024px) {
+    .main-content {
+        display: grid;
+        grid-template-columns: 350px 1fr;
+        margin: 20px 60px; 
+        align-items: start;
+    }
+}
+
+.section-title {
+    display: flex;
+    align-items: center;
+    /* justify-content: center; */
+    gap: 0.5rem;
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    color: var(--text-main);
+    font-weight: 600;
+}
+
+.custom-datepicker-wrapper {
+    display: flex;
+    justify-content: center;
+}
+
+@media (min-width: 1024px) {
+    .custom-datepicker-wrapper {
+        justify-content: flex-start;
+    }
+}
+
+.timezone-select {
+    width: 100%;
+    padding: 0.75rem;
+    border-radius: 0.5rem;
+    border: 1px solid var(--border-color);
+    margin-bottom: 2rem;
+    background: white;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.timezone-select:focus {
+    border-color: var(--primary);
+}
+
+.slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(135px, 1fr));
+    gap: 0.75rem;
+}
+
+.slot-card {
+    background: white;
+    border: 1px solid var(--border-color);
+    padding: 1rem;
+    border-radius: 0.6rem;
+    text-align: center;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.slot-card:hover:not(.booked) {
+    border-color: var(--primary);
+    box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+    transform: translateY(-2px);
+    cursor: pointer;
+}
+
+.slot-card.selected {
+    border-color: var(--primary);
+    background: #eff6ff;
+    box-shadow: 0 0 0 2px var(--primary);
+}
+
+.slot-card.booked.clickable {
+    cursor: pointer;
+    background: var(--bg-gray);
+    border: 1px dashed #cbd5e1;
+    color: #94a3b8;
+}
+
+.slot-card.current-slot {
+    background: var(--error-bg);
+    border: 2px solid #ef4444;
+    color: var(--error-text);
+}
+
+.slot-card.booked-mine {
+    background: #eff6ff;
+    border: 2px solid var(--primary);
+    color: var(--primary);
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.slot-time {
+    font-weight: 700;
+    font-size: 1rem;
+}
+
+.slot-meta {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+.edit-icon {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    opacity: 0.6;
+}
+
+.btn {
+    padding: 0.75rem 1.5rem;
+    border-radius: 0.5rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    border: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
+
+.btn-primary {
+    background: var(--primary);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--primary-hover);
+}
+
+.btn-primary:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-ghost {
+    /* background: var(--bg-gray); */
+    background: rgba(253, 0, 0, 0.521); 
+    /* color: var(--text-secondary); */
+    color: white; 
+    width: 60%;
+    /* margin-top: 1rem; */
+}
+
+.btn-secondary {
+    background: #f1f5f9;
+    color: var(--text-main);
+}
+
+.nav-btn {
+    padding: 0.4rem;
+    border-radius: 0.4rem;
+    border: 1px solid var(--border-color);
+    background: white;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.nav-btn:hover {
+    background: var(--bg-gray);
+}
+
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 1rem;
+    z-index: 50;
+}
+
+.modal-content {
+    background: white;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 0.5rem;
+    padding: 1.5rem;
+    box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1);
+    max-height: 85vh;
+    /* Margin top/bottom effect by reducing height */
+    overflow-y: auto;
+}
+
+/* Custom Scrollbar for Modal */
+.modal-content::-webkit-scrollbar {
+    width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+    background: #f1f5f9;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+    background: #94a3b8;
+}
+
+.modal-content form {
+    margin-top: 1.5rem;
+    /* Margin from top (header/summary) */
+    margin-bottom: 1rem;
+    /* Margin from bottom (though buttons handle this usually) */
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.875rem;
+    margin-bottom: 0.35rem;
+    font-weight: 500;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 0.75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.5rem;
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: var(--primary);
+}
+
+.appt-summary {
+    background: var(--bg-gray);
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+}
+
+.appt-summary p {
+    margin: 0.25rem 0;
+}
+
+.alert-success {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: var(--success-bg);
+    color: var(--success-text);
+    border-radius: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.loading-text,
+.empty-text {
+    color: var(--text-secondary);
+    font-style: italic;
+    text-align: center;
+    padding: 2rem 0;
+}
+
+/*
+### Styling & UX
+- **Full-Screen, Edge-to-Edge Layout**: The dashboard now spans the entire viewport width, achieved by removing container constraints in `App.jsx` and `App.css`.
+- **Responsive Layout**: The dashboard uses a flexbox layout that adapts to screen sizes, with a collapsible sidebar for mobile devices.
+*/
+/* Authentication Styles - Enhanced */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3rem 1rem;
+    background-color: transparent;
+}
+
+.auth-card {
+    background: var(--card-bg, #ffffff);
+    padding: 2.5rem;
+    border-radius: 1.5rem;
+    /* box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25); */
+    width: 100%;
+    max-width: 420px;
+    animation: authFadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    border: 1px solid var(--border-color);
+}
+
+.auth-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.auth-subtitle {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-top: 0.5rem;
+}
+
+.auth-success-alert,
+.auth-error-alert {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem;
+    border-radius: 0.75rem;
+    margin-bottom: 1.5rem;
+    font-size: 0.9rem;
+    border-left: 4px solid;
+}
+
+.auth-success-alert {
+    background-color: rgba(34, 197, 94, 0.1);
+    color: #22c55e;
+    border-left-color: #22c55e;
+}
+
+.auth-error-alert {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #ef4444;
+    border-left-color: #ef4444;
+}
+
+.input-group {
+    margin-bottom: 1.25rem;
+    position: relative;
+    text-align: left;
+}
+
+.field-error {
+    display: block;
+    color: #ef4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+}
+
+.password-group {
+    position: relative;
+}
+
+.password-toggle {
+    position: absolute;
+    right: 1.75rem;
+    top: 2.2rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    cursor: pointer;
+    padding: 0.25rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s;
+}
+
+.password-toggle:hover {
+    background: rgba(0, 0, 0, 0.05);
+    color: var(--primary);
+}
+
+.password-strength-meter {
+    margin-top: 0.75rem;
+}
+
+.strength-bar {
+    height: 4px;
+    border-radius: 2px;
+    background-color: #e2e8f0;
+    transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-bar.level-1 {
+    background-color: #ef4444;
+}
+
+.strength-bar.level-2 {
+    background-color: #f59e0b;
+}
+
+.strength-bar.level-3 {
+    background-color: #3b82f6;
+}
+
+.strength-bar.level-4 {
+    background-color: #22c55e;
+}
+
+.strength-text {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-top: 0.25rem;
+    display: block;
+    text-align: right;
+}
+
+.auth-footer {
+    text-align: center;
+    margin-top: 2rem;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.auth-link-btn {
+    background: none;
+    border: none;
+    color: var(--primary);
+    font-weight: 600;
+    cursor: pointer;
+    margin-left: 0.4rem;
+    padding: 0;
+    font-size: inherit;
+    font-family: inherit;
+}
+
+.auth-link-btn:hover {
+    text-decoration: underline;
+}
+
+.spinner-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    border-top-color: #fff;
+    animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+@keyframes authFadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.loading-screen {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    font-size: 1.1rem;
+    color: var(--primary);
+    font-weight: 500;
+}
+
+/* Dashboard Layout Styles */
+.dashboard-container {
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    background-color: #f8fafc;
+}
+
+.dashboard-header {
+    height: 75px;
+    background: white;
+    border-bottom: 1px solid var(--border-color);
+    flex-shrink: 0;
+}
+
+.dashboard-header .header-inner {
+    padding: 0 1.5rem;
+    height: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.dashboard-header h1 {
+    font-size: 1.25rem;
+    margin: 0;
+    background: none;
+    -webkit-text-fill-color: var(--text-main);
+    font-weight: 700;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    border-radius: 2rem;
+    transition: all 0.2s;
+}
+
+.user-profile:hover {
+    background: var(--bg-gray);
+}
+
+.user-avatar-mini {
+    width: 60px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--bg-secondary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    border: 2px solid white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    color: var(--text-secondary);
+    transition: transform 0.2s;
+}
+
+.user-profile:hover .user-avatar-mini {
+    transform: scale(1);
+    /* border-color: var(--primary); */
+    /* border: 0.5px solid black;  */
+}
+
+.avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dashboard-main {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+}
+
+.dashboard-sidebar {
+    width: 260px;
+    background: white;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+}
+
+.sidebar-header {
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar-header h3 {
+    margin: 0;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-secondary);
+}
+
+.sidebar-nav {
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.sidebar-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+    border: none;
+    background: transparent;
+    color: var(--text-secondary);
+    border-radius: 0.5rem;
+    cursor: pointer;
+    font-weight: 500;
+    transition: all 0.2s;
+    text-align: left;
+    width: 100%;
+}
+
+.sidebar-tab:hover {
+    background: var(--bg-gray);
+    color: var(--primary);
+}
+
+.sidebar-tab.active {
+    background: #eef2ff;
+    color: var(--primary);
+}
+
+.dashboard-content {
+    flex: 1;
+    padding: 0rem;
+    margin-top: 0px;
+    overflow-y: auto;
+}
+
+.tab-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 1rem;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.tab-content h2 {
+    margin-top: 0;
+    font-size: 1.5rem;
+    color: var(--text-main);
+}
+
+.access-denied {
+    height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: 1rem;
+}
+
+@media (max-width: 768px) {
+    .dashboard-sidebar {
+        width: 70px;
+    }
+
+    .sidebar-tab span,
+    .sidebar-header h3 {
+        display: none;
+    }
+
+    .sidebar-tab {
+        justify-content: center;
+        padding: 1rem;
+    }
+}
+
+
+/* Reschedule Modal Specific Styles */
+.reschedule-modal {
+    max-width: 800px !important;
+    width: 95% !important;
+}
+
+.reschedule-layout {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+@media (min-width: 768px) {
+    .reschedule-layout {
+        flex-direction: row;
+        align-items: flex-start;
+    }
+
+    .calendar-section {
+        flex: 1;
+        border-right: 1px solid var(--border-color);
+        padding-right: 1.5rem;
+    }
+
+    .slots-section {
+        flex: 1.2;
+    }
+}
+
+.reschedule-slot-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+    gap: 0.5rem;
+    max-height: 350px;
+    overflow-y: auto;
+    padding-right: 0.5rem;
+}
+
+.reschedule-slot-card {
+    padding: 0.75rem 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 0.4rem;
+    background: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.reschedule-slot-card:hover:not(:disabled) {
+    border-color: var(--primary);
+    background: var(--bg-gray);
+}
+
+.reschedule-slot-card.selected {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.reschedule-slot-card:disabled {
+    background: var(--bg-secondary);
+    color: var(--text-secondary);
+    cursor: not-allowed;
+    opacity: 0.5;
+}
+
+.reschedule-slot-card .current-badge {
+    font-size: 0.65rem;
+    background: #f59e0b;
+    color: white;
+    padding: 1px 4px;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.reschedule-slot-grid::-webkit-scrollbar {
+    width: 4px;
+}
+
+.reschedule-slot-grid::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.reschedule-slot-grid::-webkit-scrollbar-thumb {
+    background: #cbd5e1;
+    border-radius: 10px;
+}

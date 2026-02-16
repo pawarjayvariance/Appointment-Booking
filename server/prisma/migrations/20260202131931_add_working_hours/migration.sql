@@ -1,0 +1,4 @@
+-- AlterTable
+ALTER TABLE "Doctor" ADD COLUMN     "slotDuration" INTEGER NOT NULL DEFAULT 60,
+ADD COLUMN     "workingEnd" TEXT NOT NULL DEFAULT '17:00',
+ADD COLUMN     "workingStart" TEXT NOT NULL DEFAULT '09:00';

@@ -1,0 +1,136 @@
+/* Doctor Performance Dashboard Styles */
+.performance-container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    background-color: transparent;
+}
+
+.performance-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+}
+
+.performance-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 20px;
+}
+
+.filters-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.filter-input {
+    padding: 0.6rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    outline: none;
+    transition: border-color 0.2s;
+    min-width: 200px;
+}
+
+.filter-input:focus {
+    border-color: #007bff;
+}
+
+.performance-table-wrapper {
+    overflow-x: auto;
+    flex: 1;
+}
+
+.performance-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.performance-table th {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    font-weight: 600;
+    cursor: pointer;
+    user-select: none;
+    transition: background-color 0.2s;
+}
+
+.performance-table th:hover {
+    background-color: #e9ecef;
+}
+
+.performance-table td {
+    padding: 1rem;
+    border-bottom: 1px solid #dee2e6;
+    color: #333;
+}
+
+.performance-table tr:hover {
+    background-color: #f1f3f5;
+}
+
+.rating-stars {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #ffc107;
+}
+
+.rating-value {
+    color: #333;
+    font-weight: 500;
+}
+
+.sort-icon {
+    margin-left: 0.5rem;
+    font-size: 12px;
+}
+
+.loading-state,
+.empty-state,
+.error-state {
+    padding: 3rem;
+    text-align: center;
+    color: #666;
+}
+
+.error-state {
+    color: #dc3545;
+}
+
+/* Stats Summary Cards */
+.stats-summary {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background-color: #f8f9fa;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border-left: 4px solid #007bff;
+}
+
+.stat-label {
+    display: block;
+    color: #6c757d;
+    font-size: 14px;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    font-size: 24px;
+    font-weight: 700;
+    color: #212529;
+}
