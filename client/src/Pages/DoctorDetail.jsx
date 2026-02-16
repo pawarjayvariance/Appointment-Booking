@@ -116,7 +116,7 @@ const DoctorDetail = () => {
                 </div>
 
                 {isDoctorSelf && (
-                    <Button variant="primary" onClick={() => setIsEditing(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <Button variant="primary" onClick={() => setIsEditing(true)} style={{ display: 'flex', alignItems: 'center', gap: '8px' , marginTop: '20px'}}>
                         <Edit3 size={18} /> Edit Profile
                     </Button>
                 )}
